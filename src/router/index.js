@@ -1,21 +1,41 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
+import user from './modules/user'
+import leave from './modules/leave'
+import layout from '../layout'
 
-const routes = [
-  // {
-  //   path: '/',
-  //   name: 'home',
-  //   component: HomeView
-  // },
+export const routes = [
+  {
+    path: '/:catchAll(.*)', // 不识别的path自动匹配404
+    redirect: '/exception'
+  },
+  {
+    path: '/exception',
+    component: () => import('../views/404')
+  },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/login')
-  }
+    component: () => import(/* webpackChunkName: "about" */ '../views/login')
+  },
+  {
+    path: '/',
+    component: layout,
+    redirect: '/welcome',
+    children: [
+      {
+        path: '/welcome',
+        name: 'welcome',
+        component: () => import('../views/welcome')
+      }
+    ]
+  },
+  user,
+  leave
 ]
 
 const router = createRouter({
   history: createWebHashHistory(),
+  // routes: [...routes, ...privateRoutes]
   routes
 })
 
